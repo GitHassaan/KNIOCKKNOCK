@@ -21,6 +21,7 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
+module.exports = app;
 
 // Base route
 app.get('/', (req, res) => {
