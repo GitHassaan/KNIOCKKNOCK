@@ -2,35 +2,29 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const Setting = require('../models/Setting');
 const multer = require('multer');
-const path = require('path');
 
-// Multer Setup for File Uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // 'uploads' naam ka folder banega jahan images save hongi
-    },
-    filename: function (req, file, cb) {
-        cb(null, 'payment-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
+// Glitch par files disk par save nahi hoti, isliye memory storage use karenge
+const storage = multer.memoryStorage();
 exports.upload = multer({ storage: storage });
+
 // Create Order
-// Create Order (with Image Upload)
 exports.createOrder = async (req, res) => {
     try {
         const { pickupStore, items, deliveryAddress, preferredTime, paymentMethod } = req.body;
         
         const orderId = `KK-${Math.floor(1000 + Math.random() * 9000)}`;
 
-        // Agar image upload hui hai toh uska path lena
-        const paymentSS = req.file ? `/uploads/${req.file.filename}` : null;
+        // Image ko base64 string mein convert kar ke database mein save karna
+        let paymentSS = null;
+        if (req.file) {
+            paymentSS = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        }
 
         const order = await Order.create({
             user: req.user._id,
             orderId,
             pickupStore,
-            items: JSON.parse(items), // FormData mein array string bhejta hai, isliye parse karna
+            items: JSON.parse(items),
             deliveryAddress,
             preferredTime,
             paymentMethod,
