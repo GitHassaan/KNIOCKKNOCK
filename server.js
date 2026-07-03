@@ -1,3 +1,4 @@
+
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
@@ -21,12 +22,18 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
-module.exports = app;
 
 // Base route
 app.get('/', (req, res) => {
     res.send('Knock Knock API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, console.log(`Server running on port ${PORT}`));
+// Yeh sirf local PC ke liye hai
+if (require.main === module) {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, console.log(`Server running on port ${PORT}`));
+}
+
+// Vercel ke liye app export karna lazmi hai
+
+module.exports = app;
