@@ -1,4 +1,3 @@
-
 const express = require('express');
 const connectDB = require('./config/db');
 const cors = require('cors');
@@ -9,15 +8,14 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(express.json());
-app.post('/api/webhook', express.raw({type: 'application/json'}), (req, res) => {
-    // Yeh Stripe webhook hai (Local testing ke liye)
-    // Jab website live hogi, toh Stripe dashboard mein is URL ko add karenge
-    res.status(200).send('Webhook Received');
-});
-app.use(cors());
-app.use('/uploads', express.static('uploads'));
+// Middleware (Images ki size barhai hai taake crash na ho)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -28,12 +26,5 @@ app.get('/', (req, res) => {
     res.send('Knock Knock API is running...');
 });
 
-// Yeh sirf local PC ke liye hai
-if (require.main === module) {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, console.log(`Server running on port ${PORT}`));
-}
-
 // Vercel ke liye app export karna lazmi hai
-
 module.exports = app;
