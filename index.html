@@ -1,0 +1,2250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Knock Knock — Premium pickup & delivery service for groceries, cakes, medicines, food, and daily essentials from your favorite local stores in Sargodha." />
+<meta name="theme-color" content="#0a0f0a" />
+<title>Knock Knock — Fast Delivery From Your Favorite Local Stores</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script>
+tailwind.config = {
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Bricolage Grotesque"', 'sans-serif'],
+        sans: ['Manrope', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace']
+      },
+      colors: {
+        kk: {
+          green: { DEFAULT: '#22c55e', 50: '#ecfdf5', 100: '#d1fae5', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' },
+          orange: { DEFAULT: '#fb923c', 400: '#fb923c', 500: '#f97316', 600: '#ea580c' },
+          ink: '#0a0f0a', surface: '#0f1612', elevated: '#161e19'
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+:root {
+  --bg: #0a0f0a;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text: #f5f7f5;
+  --text-dim: #9aa39a;
+  --green: #22c55e;
+  --green-soft: #4ade80;
+  --orange: #fb923c;
+  --orange-soft: #fdba74;
+  --glow-green: rgba(34,197,94,0.35);
+  --glow-orange: rgba(251,146,60,0.25);
+  --grid: rgba(255,255,255,0.025);
+}
+[data-theme="light"] {
+  --bg: #f4f7f4;
+  --surface: rgba(10,15,10,0.04);
+  --border: rgba(10,15,10,0.10);
+  --text: #0a0f0a;
+  --text-dim: #5a6358;
+  --green: #16a34a;
+  --green-soft: #22c55e;
+  --orange: #ea580c;
+  --orange-soft: #fb923c;
+  --glow-green: rgba(22,163,74,0.18);
+  --glow-orange: rgba(234,88,12,0.15);
+  --grid: rgba(10,15,10,0.04);
+}
+
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+::selection { background: var(--green); color: #0a0f0a; }
+
+.font-display { font-family: 'Bricolage Grotesque', sans-serif; letter-spacing: -0.025em; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--border);
+}
+.glass-strong {
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid var(--border);
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-dots {
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.glow-green { box-shadow: 0 0 0 1px var(--green), 0 0 30px var(--glow-green), 0 0 60px var(--glow-green); }
+.glow-orange { box-shadow: 0 0 30px var(--glow-orange); }
+.text-glow-green { text-shadow: 0 0 30px var(--glow-green); }
+
+.btn-primary {
+  background: var(--green);
+  color: #0a0f0a;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px var(--glow-green); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.btn-secondary:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 40s linear infinite; }
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.float-y { animation: float-y 4s ease-in-out infinite; }
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.pulse-ring::before, .pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  animation: pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.pulse-ring::after { animation-delay: 1.25s; }
+
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+.loader-bar {
+  height: 2px;
+  background: var(--green);
+  animation: load 1.8s ease-out forwards;
+  transform-origin: left;
+}
+@keyframes load {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+.field {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+.field:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--glow-green);
+}
+.field::placeholder { color: var(--text-dim); }
+textarea.field { resize: vertical; min-height: 120px; }
+select.field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aa39a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; padding-right: 44px; }
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  padding: 16px 22px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(120%);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.toast.show { transform: translateX(0); }
+
+.timeline-track {
+  background: linear-gradient(90deg, var(--green) var(--progress, 0%), var(--border) var(--progress, 0%));
+  transition: background 0.6s ease;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.admin-nav-item.active { background: var(--green); color: #0a0f0a; }
+
+.mobile-nav-open { transform: translateX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- ============ LOADER ============ -->
+<div id="loader" class="fixed inset-0 z-[100] bg-[--bg] flex flex-col items-center justify-center transition-opacity duration-700">
+  <div class="relative">
+    <svg width="80" height="80" viewBox="0 0 80 80" class="mb-6">
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--border)" stroke-width="2"/>
+      <circle cx="40" cy="40" r="36" fill="none" stroke="var(--green)" stroke-width="2" stroke-dasharray="80 200" stroke-linecap="round" transform="rotate(-90 40 40)">
+        <animateTransform attributeName="transform" type="rotate" from="0 40 40" to="360 40 40" dur="1.4s" repeatCount="indefinite"/>
+      </circle>
+      <text x="40" y="48" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="20" fill="var(--green)">K</text>
+    </svg>
+  </div>
+  <div class="font-display text-2xl font-bold mb-2">Knock Knock</div>
+  <div class="text-xs font-mono text-[--text-dim] mb-6 tracking-widest">PREPARING YOUR RIDE</div>
+  <div class="w-48 h-[2px] bg-[--border] rounded-full overflow-hidden">
+    <div class="loader-bar h-full w-full"></div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div id="toast" class="toast glass-strong">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toast-msg" class="text-sm font-medium">Order placed successfully</span>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-4">
+    <nav class="glass-strong rounded-2xl px-5 py-3 flex items-center justify-between">
+      <a href="#" onclick="showPage('home'); return false;" class="flex items-center gap-2.5 group">
+        <div class="relative w-9 h-9 rounded-xl bg-[--green] flex items-center justify-center overflow-hidden">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0f0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <path d="M9 22V12h6v10"/>
+          </svg>
+          <div class="absolute inset-0 bg-white/30 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+        </div>
+        <div class="font-display font-bold text-lg leading-none">Knock Knock<span class="text-[--green]">.</span></div>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-1 text-sm">
+        <button onclick="navigateTo('how')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">How it works</button>
+        <button onclick="navigateTo('services')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">Services</button>
+        <button onclick="navigateTo('areas')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">Areas</button>
+        <button onclick="navigateTo('reviews')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">Reviews</button>
+        <button onclick="navigateTo('faq')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">FAQ</button>
+        <button onclick="navigateTo('contact')" class="px-4 py-2 rounded-full hover:bg-[--surface] transition-colors">Contact</button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" aria-label="Toggle theme" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:border-[--green] transition-colors">
+          <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        
+        <!-- Yeh Login ka Button hai -->
+        <button onclick="showPage('login')" class="hidden md:inline-flex btn-secondary !py-2.5 !px-5 text-sm">
+          Login
+        </button>
+
+        <button onclick="navigateTo('request')" class="hidden md:inline-flex btn-primary !py-2.5 !px-5 text-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <button id="mobile-toggle" aria-label="Open menu" class="lg:hidden w-10 h-10 rounded-full glass flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Mobile nav -->
+  <div id="mobile-nav" class="lg:hidden fixed inset-0 z-40 translate-x-full transition-transform duration-300 bg-[--bg] p-6 flex flex-col">
+    <div class="flex justify-end mb-8">
+      <button id="mobile-close" aria-label="Close menu" class="w-10 h-10 rounded-full glass flex items-center justify-center">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex flex-col gap-2 text-2xl font-display font-semibold">
+      <button onclick="navigateTo('how')" class="mobile-link py-3 border-b border-[--border] text-left">How it works</button>
+      <button onclick="navigateTo('services')" class="mobile-link py-3 border-b border-[--border] text-left">Services</button>
+      <button onclick="navigateTo('areas')" class="mobile-link py-3 border-b border-[--border] text-left">Areas</button>
+      <button onclick="navigateTo('reviews')" class="mobile-link py-3 border-b border-[--border] text-left">Reviews</button>
+      <button onclick="navigateTo('faq')" class="mobile-link py-3 border-b border-[--border] text-left">FAQ</button>
+      <button onclick="navigateTo('contact')" class="mobile-link py-3 border-b border-[--border] text-left">Contact</button>
+      <button onclick="navigateTo('request')" class="mobile-link py-3 text-[--green] text-left">Request Delivery →</button>
+      <button onclick="navigateTo('track')" class="mobile-link py-3 text-[--orange] text-left">Track Order</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app">
+
+<!-- =================== HOME PAGE =================== -->
+<main id="page-home">
+
+  <!-- ===== HERO ===== -->
+  <section id="home" class="relative min-h-screen pt-32 pb-20 overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-60"></div>
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at 30% 40%, var(--glow-green) 0%, transparent 50%), radial-gradient(ellipse at 80% 60%, var(--glow-orange) 0%, transparent 50%);"></div>
+
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+
+    <div class="relative max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
+      <div class="lg:col-span-7 z-10">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 text-xs font-mono tracking-wider">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[--green] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[--green]"></span>
+          </span>
+          NOW LIVE IN SARGODHA
+        </div>
+
+        <h1 class="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-bold leading-[0.95] mb-6">
+          Fast Delivery<br/>
+          <span class="text-[--green] text-glow-green">From Your Favorite</span><br/>
+          Local Stores.
+        </h1>
+
+        <p class="text-lg md:text-xl text-[--text-dim] max-w-xl mb-10 leading-relaxed">
+          Need groceries, cakes, medicine, food, or daily essentials? Tell us what you need and we'll pick it up from any store you choose — and deliver it to your doorstep.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button onclick="navigateTo('request')" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            Request Delivery
+          </button>
+          <button onclick="navigateTo('track')" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Track Order
+          </button>
+        </div>
+
+        <div class="mt-12 grid grid-cols-3 gap-6 max-w-md">
+          <div>
+            <div class="font-display text-3xl font-bold text-[--green]">45<span class="text-base text-[--text-dim] font-sans">min</span></div>
+            <div class="text-xs text-[--text-dim] mt-1">Avg. delivery</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl font-bold">12k+</div>
+            <div class="text-xs text-[--text-dim] mt-1">Deliveries done</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl font-bold">4.9<span class="text-base text-[--text-dim] font-sans">/5</span></div>
+            <div class="text-xs text-[--text-dim] mt-1">Customer rating</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 relative h-[400px] lg:h-[600px] hidden lg:block">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <div class="relative">
+            <div class="absolute inset-0 pulse-ring rounded-full w-32 h-32"></div>
+            <div class="glass-strong rounded-2xl p-5 w-64 float-y">
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-xs font-mono text-[--text-dim]">ORDER #KK-8341</div>
+                <span class="px-2 py-0.5 rounded-full bg-[--green]/20 text-[--green] text-[10px] font-bold">ON THE WAY</span>
+              </div>
+              <div class="text-sm font-semibold mb-2">Clifton Bakery → Home</div>
+              <div class="h-1.5 bg-[--border] rounded-full overflow-hidden mb-3">
+                <div class="h-full bg-[--green] rounded-full" style="width: 72%"></div>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-[--text-dim]">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Arriving in 12 min
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[--text-dim]">
+      <div class="text-[10px] font-mono tracking-widest">SCROLL</div>
+      <div class="w-px h-12 bg-gradient-to-b from-[--green] to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- ===== TRUST MARQUEE ===== -->
+  <section class="py-8 border-y border-[--border] overflow-hidden">
+    <div class="flex items-center gap-3 mb-4 px-5 max-w-7xl mx-auto">
+      <div class="text-xs font-mono tracking-widest text-[--text-dim]">WE PICK UP FROM</div>
+      <div class="flex-1 h-px bg-[--border]"></div>
+    </div>
+    <div class="overflow-hidden">
+      <div class="marquee-track flex gap-12 whitespace-nowrap">
+        <span class="font-display text-2xl text-[--text-dim] flex items-center gap-12">Al-Fatah Store <span class="text-[--green]">●</span> Chase Up <span class="text-[--green]">●</span> Naheed Super <span class="text-[--green]">●</span> Servaid Pharmacy <span class="text-[--green]">●</span> D.Watson <span class="text-[--green]">●</span> Bismillah Super <span class="text-[--green]">●</span> Hashim Super <span class="text-[--green]">●</span> Sultan Bakery <span class="text-[--green]">●</span> </span>
+        <span class="font-display text-2xl text-[--text-dim] flex items-center gap-12">Al-Fatah Store <span class="text-[--green]">●</span> Chase Up <span class="text-[--green]">●</span> Naheed Super <span class="text-[--green]">●</span> Servaid Pharmacy <span class="text-[--green]">●</span> D.Watson <span class="text-[--green]">●</span> Bismillah Super <span class="text-[--green]">●</span> Hashim Super <span class="text-[--green]">●</span> Sultan Bakery <span class="text-[--green]">●</span> </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+        <div class="lg:col-span-5">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">01 — PROCESS</div>
+          <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">Six simple steps.<br/><span class="text-[--text-dim]">Zero hassle.</span></h2>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-7 flex items-end">
+          <p class="text-lg text-[--text-dim]">From typing your list to knocking on your door — here's exactly how Knock Knock gets your favorite things to you, fast and verified.</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--green] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 01</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Choose or enter the store</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Pick any supermarket, bakery, pharmacy, or restaurant. We'll go exactly where you tell us.</p>
+        </div>
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--green] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 02</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">List the items you need</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Type your shopping list in plain words. Attach a reference image if you have one.</p>
+        </div>
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--green] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 03</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Enter delivery address</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Drop your pin or type your address. We auto-calculate the delivery fee from distance.</p>
+        </div>
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--orange] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--orange]/10 border border-[--orange]/30 flex items-center justify-center text-[--orange]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 04</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Pay 50% in advance</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Secure your slot with half the estimated total via Stripe or bank transfer. Fully encrypted.</p>
+        </div>
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--green] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 05</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Knock Knock picks up</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Our verified rider arrives at the store, collects your items, and starts the live tracker.</p>
+        </div>
+        <div class="reveal glass rounded-3xl p-7 hover:border-[--orange] transition-colors group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-[--orange]/10 border border-[--orange]/30 flex items-center justify-center text-[--orange]">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+            </div>
+            <span class="font-mono text-xs text-[--text-dim]">STEP 06</span>
+          </div>
+          <h3 class="font-display text-xl font-bold mb-2">Pay the remaining 50% COD</h3>
+          <p class="text-sm text-[--text-dim] leading-relaxed">Settle the balance in cash when your order arrives. Inspect, then pay. Simple.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHY CHOOSE ===== -->
+  <section class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0 bg-dots opacity-40"></div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+      <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+        <div class="lg:col-span-6">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">02 — WHY KNOCK KNOCK</div>
+          <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">Built for the way<br/>Sargodha actually <span class="text-[--green]">shops</span>.</h2>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-6">
+        <div class="reveal lg:col-span-7 glass rounded-3xl p-10 relative overflow-hidden">
+          <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-[--green] opacity-10 blur-3xl"></div>
+          <div class="relative">
+            <div class="font-mono text-xs text-[--text-dim] mb-3">FEATURED</div>
+            <h3 class="font-display text-3xl md:text-4xl font-bold mb-4 leading-tight">Any store. Any item. We don't pick favorites.</h3>
+            <p class="text-[--text-dim] text-lg leading-relaxed mb-8 max-w-xl">Unlike delivery apps that lock you into a catalog, Knock Knock goes wherever you want. Local bakery across the street? Done. Specific pharmacy brand? Done. The butcher your mom swears by? Done.</p>
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <div class="font-display text-4xl font-bold text-[--green]">200+</div>
+                <div class="text-sm text-[--text-dim] mt-1">Stores we pickup from</div>
+              </div>
+              <div>
+                <div class="font-display text-4xl font-bold">9am–10pm</div>
+                <div class="text-sm text-[--text-dim] mt-1">Daily operating window</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-6">
+          <div class="reveal glass rounded-3xl p-7 flex items-start gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green] flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <h4 class="font-display text-lg font-bold mb-1">Verified riders</h4>
+              <p class="text-sm text-[--text-dim]">Every rider is background-checked, trained, and rated by customers after each delivery.</p>
+            </div>
+          </div>
+          <div class="reveal glass rounded-3xl p-7 flex items-start gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-[--orange]/10 border border-[--orange]/30 flex items-center justify-center text-[--orange] flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <h4 class="font-display text-lg font-bold mb-1">Live GPS tracking</h4>
+              <p class="text-sm text-[--text-dim]">Watch your rider move in real-time. Know the exact ETA to the minute.</p>
+            </div>
+          </div>
+          <div class="reveal glass rounded-3xl p-7 flex items-start gap-5">
+            <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green] flex-shrink-0">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+            </div>
+            <div>
+              <h4 class="font-display text-lg font-bold mb-1">Inspect before you pay</h4>
+              <p class="text-sm text-[--text-dim]">Check your items at the door. If something's off, our rider fixes it before you settle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section id="services" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="reveal flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-14">
+        <div>
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">03 — SERVICES</div>
+          <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">We pick up<br/><span class="text-[--text-dim]">practically anything.</span></h2>
+        </div>
+        <p class="text-[--text-dim] max-w-md">Nine categories we deliver daily. Don't see yours? Just request it — if it's legal and fits on a scooter, we'll bring it.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div id="services-grid" class="contents"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DELIVERY AREAS ===== -->
+  <section id="areas" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-40"></div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+      <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+        <div class="lg:col-span-6">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">04 — COVERAGE</div>
+          <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">Currently knocking<br/>in Sargodha.</h2>
+        </div>
+        <div class="lg:col-span-5 lg:col-start-8 flex items-end">
+          <p class="text-[--text-dim] text-lg">Expanding to nearby cities soon. Sign up for the newsletter to know when we knock on your city.</p>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="reveal glass rounded-3xl p-8 group hover:border-[--green] transition-colors">
+          <div class="flex items-center justify-between mb-6">
+            <div class="font-display text-3xl font-bold">Sargodha City</div>
+            <span class="px-3 py-1 rounded-full bg-[--green]/15 text-[--green] text-xs font-mono font-bold">LIVE</span>
+          </div>
+          <div class="space-y-2 text-sm text-[--text-dim]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--green]"></span> Block 1-10</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--green]"></span> Satellite Town</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--green]"></span> Model Town</div>
+          </div>
+          <div class="mt-6 pt-6 border-t border-[--border] text-xs font-mono text-[--text-dim]">12 NEIGHBORHOODS · 40+ RIDERS</div>
+        </div>
+
+        <div class="reveal glass rounded-3xl p-8 group hover:border-[--green] transition-colors">
+          <div class="flex items-center justify-between mb-6">
+            <div class="font-display text-3xl font-bold">Bhalwal</div>
+            <span class="px-3 py-1 rounded-full bg-[--orange]/15 text-[--orange] text-xs font-mono font-bold">COMING SOON</span>
+          </div>
+          <div class="space-y-2 text-sm text-[--text-dim]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> City Center</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> Main Bazar</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> Residential Areas</div>
+          </div>
+          <div class="mt-6 pt-6 border-t border-[--border] text-xs font-mono text-[--text-dim]">LAUNCHING Q1 2025</div>
+        </div>
+
+        <div class="reveal glass rounded-3xl p-8 group hover:border-[--green] transition-colors">
+          <div class="flex items-center justify-between mb-6">
+            <div class="font-display text-3xl font-bold">Shahpur</div>
+            <span class="px-3 py-1 rounded-full bg-[--orange]/15 text-[--orange] text-xs font-mono font-bold">COMING SOON</span>
+          </div>
+          <div class="space-y-2 text-sm text-[--text-dim]">
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> Main Road</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> Sadar Bazar</div>
+            <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-[--orange]"></span> Local Villages</div>
+          </div>
+          <div class="mt-6 pt-6 border-t border-[--border] text-xs font-mono text-[--text-dim]">LAUNCHING Q2 2025</div>
+        </div>
+      </div>
+
+      <!-- Coverage map mock -->
+      <div class="reveal mt-10 glass rounded-3xl p-6 md:p-10 relative overflow-hidden">
+        <div class="grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-3">DELIVERY FEE MATRIX</div>
+            <h3 class="font-display text-3xl font-bold mb-6">Transparent pricing by distance</h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-3 border-b border-[--border]">
+                <span class="text-sm">0 – 3 km</span>
+                <span class="font-mono font-bold text-[--green]" id="price-0-3">Rs. 100</span>
+              </div>
+              <div class="flex items-center justify-between py-3 border-b border-[--border]">
+                <span class="text-sm">3 – 6 km</span>
+                <span class="font-mono font-bold text-[--green]" id="price-3-6">Rs. 200</span>
+              </div>
+              <div class="flex items-center justify-between py-3 border-b border-[--border]">
+                <span class="text-sm">6 – 10 km</span>
+                <span class="font-mono font-bold text-[--green]" id="price-6-10">Rs. 300</span>
+              </div>
+              <div class="flex items-center justify-between py-3">
+                <span class="text-sm">Above 10 km</span>
+                <span class="font-mono font-bold text-[--orange]" id="price-above-10">Auto-calculated</span>
+              </div>
+            </div>
+          </div>
+          <div class="relative aspect-square">
+            <svg viewBox="0 0 400 400" class="w-full h-full">
+              <defs>
+                <radialGradient id="mapGlow" cx="50%" cy="50%">
+                  <stop offset="0%" stop-color="var(--green)" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="var(--green)" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <circle cx="200" cy="200" r="180" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/>
+              <circle cx="200" cy="200" r="120" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/>
+              <circle cx="200" cy="200" r="60" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="4 4"/>
+              <circle cx="200" cy="200" r="180" fill="url(#mapGlow)"/>
+              <circle cx="200" cy="200" r="8" fill="var(--green)"/>
+              <circle cx="200" cy="200" r="14" fill="none" stroke="var(--green)" stroke-width="2">
+                <animate attributeName="r" from="8" to="30" dur="2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" from="1" to="0" dur="2s" repeatCount="indefinite"/>
+              </circle>
+              <text x="200" y="50" text-anchor="middle" font-size="11" fill="var(--text-dim)" font-family="JetBrains Mono" letter-spacing="2">LIVE FLEET MAP</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REQUEST DELIVERY FORM ===== -->
+  <section id="request" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at 70% 30%, var(--glow-green) 0%, transparent 60%);"></div>
+    <div class="max-w-5xl mx-auto px-5 md:px-8 relative">
+      <div class="reveal text-center mb-14">
+        <div class="text-xs font-mono tracking-widest text-[--green] mb-4">05 — REQUEST</div>
+        <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight mb-4">Tell us what you need.</h2>
+        <p class="text-[--text-dim] text-lg max-w-2xl mx-auto">Fill the form below. We'll match you with the nearest rider and send a tracking ID within minutes.</p>
+      </div>
+
+      <form id="delivery-form" class="reveal glass-strong rounded-3xl p-6 md:p-10 space-y-6">
+        <div>
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">YOUR DETAILS</div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium mb-2 block">Full Name *</label>
+              <input class="field" type="text" name="name" required placeholder="e.g. Ahmed Khan" />
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Phone Number *</label>
+              <input class="field" type="tel" name="phone" required placeholder="03XX-XXXXXXX" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium mb-2 block">Email <span class="text-[--text-dim]">(optional)</span></label>
+              <input class="field" type="email" name="email" placeholder="you@example.com" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-[--border]">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">PICKUP FROM</div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm font-medium mb-2 block">Store Name *</label>
+              <input class="field" type="text" name="store" required placeholder="e.g. Al-Fatah Store, Block 7" list="stores-list" />
+              <datalist id="stores-list">
+                <option value="Al-Fatah Store"></option>
+                <option value="Chase Up"></option>
+                <option value="Naheed Superstore"></option>
+                <option value="Servaid Pharmacy"></option>
+                <option value="D.Watson"></option>
+                <option value="Bismillah Super"></option>
+                <option value="Sultan Bakery"></option>
+              </datalist>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Store Address <span class="text-[--text-dim]">(optional)</span></label>
+              <input class="field" type="text" name="storeAddr" placeholder="Branch or full address" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium mb-2 block">Item List *</label>
+              <textarea class="field" name="items" required placeholder="2x milk cartons&#10;1x sourdough bread&#10;500g chicken breast&#10;1x Panadol extra"></textarea>
+              <div class="text-xs text-[--text-dim] mt-2 flex items-center gap-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                One item per line. Be as specific as you like.
+              </div>
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium mb-2 block">Reference Image <span class="text-[--text-dim]">(optional)</span></label>
+              <div class="field flex items-center justify-between cursor-pointer hover:border-[--green] transition-colors" onclick="document.getElementById('ref-image').click()">
+                <span class="text-[--text-dim] text-sm" id="ref-image-name">Tap to upload a photo of the exact items</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+              </div>
+              <input type="file" id="ref-image" name="refImage" accept="image/*" class="hidden" onchange="document.getElementById('ref-image-name').textContent = this.files[0]?.name || 'Tap to upload a photo of the exact items'" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-[--border]">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">DELIVER TO</div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+              <label class="text-sm font-medium mb-2 block">Delivery Address *</label>
+              <textarea class="field" name="delAddr" required placeholder="House #, Street, Area, City"></textarea>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Preferred Delivery Time *</label>
+              <select class="field" name="time" required>
+                <option value="">Select a slot</option>
+                <option>As soon as possible</option>
+                <option>Today, 9 AM – 12 PM</option>
+                <option>Today, 12 PM – 3 PM</option>
+                <option>Today, 3 PM – 6 PM</option>
+                <option>Today, 6 PM – 9 PM</option>
+                <option>Tomorrow, 9 AM – 12 PM</option>
+                <option>Tomorrow, 12 PM – 3 PM</option>
+                <option>Tomorrow, 3 PM – 6 PM</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-medium mb-2 block">Additional Notes <span class="text-[--text-dim]">(optional)</span></label>
+              <input class="field" type="text" name="notes" placeholder="Gate code, call on arrival, etc." />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-[--border]">
+                 <div class="pt-6 border-t border-[--border]">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">PAYMENT</div>
+          
+          <div class="glass rounded-2xl p-5 mb-6">
+            <h4 class="font-display font-bold mb-3">Pay 50% Advance via Easypaisa/JazzCash</h4>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div class="text-[--text-dim]">Easypaisa</div>
+                <div class="font-mono font-bold text-[--green]">03XX-XXXXXXX</div>
+              </div>
+              <div>
+                <div class="text-[--text-dim]">JazzCash</div>
+                <div class="font-mono font-bold text-[--green]">03XX-XXXXXXX</div>
+              </div>
+            </div>
+            <p class="text-xs text-[--text-dim] mt-3">Send Rs. 500 advance to the above number, then upload the screenshot below.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <label class="glass rounded-2xl p-5 cursor-pointer flex items-start gap-4 hover:border-[--green] transition-colors has-[:checked]:border-[--green] has-[:checked]:bg-[--green]/5">
+              <input type="radio" name="payment" value="easypaisa" required class="mt-1 accent-[--green]" checked />
+              <div class="font-semibold">Easypaisa</div>
+            </label>
+            <label class="glass rounded-2xl p-5 cursor-pointer flex items-start gap-4 hover:border-[--green] transition-colors has-[:checked]:border-[--green] has-[:checked]:bg-[--green]/5">
+              <input type="radio" name="payment" value="jazzcash" class="mt-1 accent-[--green]" />
+              <div class="font-semibold">JazzCash</div>
+            </label>
+          </div>
+
+          <div>
+            <label class="text-sm font-medium mb-2 block">Upload Payment Screenshot *</label>
+            <div class="field flex items-center justify-between cursor-pointer hover:border-[--green] transition-colors" onclick="document.getElementById('payment-ss').click()">
+              <span class="text-[--text-dim] text-sm" id="payment-ss-name">Tap to upload screenshot</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+            </div>
+            <input type="file" id="payment-ss" name="paymentSS" accept="image/*" class="hidden" onchange="document.getElementById('payment-ss-name').textContent = this.files[0]?.name || 'Tap to upload screenshot'" required />
+          </div>
+        </div>
+          <div class="glass rounded-2xl p-5 space-y-3">
+            <div class="text-xs text-[--text-dim] text-center">
+              Final item bill will be calculated based on actual store prices. Delivery fee will be confirmed by rider.
+            </div>
+            <div class="border-t border-[--border] pt-3 grid grid-cols-2 gap-3">
+              <div>
+                <div class="text-xs text-[--text-dim] mb-1">Pay now (Advance)</div>
+                <div class="font-mono font-bold text-[--orange]" id="advance-amount">Rs. 100</div>
+              </div>
+              <div>
+                <div class="text-xs text-[--text-dim] mb-1">Cash on delivery</div>
+                <div class="font-mono font-bold">Final Bill + Fee</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 flex flex-col sm:flex-row items-center gap-4 justify-between">
+          <div class="text-xs text-[--text-dim] flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Your data is encrypted end-to-end. We never store card details.
+          </div>
+          <button type="submit" class="btn-primary w-full sm:w-auto justify-center">
+            <span>Confirm & Generate Order ID</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== TRACK ORDER ===== -->
+  <section id="track" class="py-24 md:py-32 relative">
+    <div class="max-w-5xl mx-auto px-5 md:px-8">
+      <div class="reveal text-center mb-14">
+        <div class="text-xs font-mono tracking-widest text-[--green] mb-4">06 — TRACK</div>
+        <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight mb-4">Where's my Knock Knock?</h2>
+        <p class="text-[--text-dim] text-lg">Enter your Order ID or phone number to see live status and ETA.</p>
+      </div>
+
+      <div class="reveal glass-strong rounded-3xl p-6 md:p-10">
+        <div class="grid sm:grid-cols-[1fr_auto] gap-3 mb-8">
+          <input class="field" id="track-input" placeholder="Order ID (e.g. KK-8341) or phone number" />
+          <button class="btn-primary justify-center" onclick="trackOrder()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            Track
+          </button>
+        </div>
+
+        <div id="track-empty" class="text-center py-12 text-[--text-dim]">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 opacity-50"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <p class="text-sm">Try a sample ID like <button class="font-mono text-[--green] underline" onclick="document.getElementById('track-input').value='KK-8341'; trackOrder();">KK-8341</button></p>
+        </div>
+
+        <div id="track-result" class="hidden">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-8 border-b border-[--border]">
+            <div>
+              <div class="text-xs font-mono text-[--text-dim] mb-1">ORDER ID</div>
+              <div class="font-display text-2xl font-bold" id="track-id">KK-8341</div>
+            </div>
+            <div>
+              <div class="text-xs font-mono text-[--text-dim] mb-1">FROM → TO</div>
+              <div class="text-sm font-medium" id="track-route">Loading...</div>
+            </div>
+            <div>
+              <div class="text-xs font-mono text-[--text-dim] mb-1">ESTIMATED ARRIVAL</div>
+              <div class="text-sm font-bold text-[--green]" id="track-eta">Loading...</div>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <div class="flex justify-between text-xs font-mono text-[--text-dim] mb-3">
+              <span>REQUEST</span>
+              <span>PICKUP</span>
+              <span>DELIVERY</span>
+            </div>
+            <div class="relative h-2 bg-[--border] rounded-full overflow-hidden mb-8">
+              <div class="absolute inset-y-0 left-0 bg-[--green] rounded-full transition-all duration-1000" id="track-progress" style="width: 0%"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[--green] border-2 border-[--bg] shadow-lg transition-all duration-1000" style="left: -8px" id="track-marker"></div>
+            </div>
+
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+              <div class="track-step text-center" data-step="0">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">1</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">RECEIVED</div>
+              </div>
+              <div class="track-step text-center" data-step="1">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">2</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">ACCEPTED</div>
+              </div>
+              <div class="track-step text-center" data-step="2">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">3</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">RIDER ASSIGNED</div>
+              </div>
+              <div class="track-step text-center" data-step="3">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">4</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">PICKING UP</div>
+              </div>
+              <div class="track-step text-center" data-step="4">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">5</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">ON THE WAY</div>
+              </div>
+              <div class="track-step text-center" data-step="5">
+                <div class="w-10 h-10 mx-auto rounded-full bg-[--border] flex items-center justify-center mb-2">
+                  <span class="text-xs font-mono text-[--text-dim]">6</span>
+                </div>
+                <div class="text-[10px] font-mono text-[--text-dim]">DELIVERED</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REVIEWS ===== -->
+  <section id="reviews" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0 bg-dots opacity-30"></div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+      <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+        <div class="lg:col-span-6">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">07 — REVIEWS</div>
+          <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">Loved by people<br/>who hate errands.</h2>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5" id="reviews-grid"></div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="py-24 md:py-32">
+    <div class="max-w-4xl mx-auto px-5 md:px-8">
+      <div class="reveal text-center mb-14">
+        <div class="text-xs font-mono tracking-widest text-[--green] mb-4">08 — FAQ</div>
+        <h2 class="font-display text-4xl md:text-6xl font-bold leading-tight">Questions, answered.</h2>
+      </div>
+
+      <div class="reveal space-y-3" id="faq-list"></div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT + NEWSLETTER ===== -->
+  <section id="contact" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 50%, var(--glow-green) 0%, transparent 60%);"></div>
+    <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="reveal glass-strong rounded-3xl p-8 md:p-10">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">09 — CONTACT</div>
+          <h2 class="font-display text-3xl md:text-4xl font-bold mb-6 leading-tight">Need help with an order?<br/>We're here 9 AM – 10 PM.</h2>
+
+          <div class="space-y-4">
+            <a href="tel:0333-9810195" class="flex items-center gap-4 p-4 rounded-2xl glass hover:border-[--green] transition-colors group">
+              <div class="w-12 h-12 rounded-xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs text-[--text-dim]">Call us</div>
+                <div class="font-semibold font-mono">0333-9810195</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+
+            <a href="https://wa.me/923339810195" class="flex items-center gap-4 p-4 rounded-2xl glass hover:border-[--green] transition-colors group">
+              <div class="w-12 h-12 rounded-xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs text-[--text-dim]">WhatsApp</div>
+                <div class="font-semibold font-mono">0333-9810195</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+
+            <div class="flex items-center gap-4 p-4 rounded-2xl glass">
+              <div class="w-12 h-12 rounded-xl bg-[--orange]/10 border border-[--orange]/30 flex items-center justify-center text-[--orange]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs text-[--text-dim]">Operating hours</div>
+                <div class="font-semibold">9:00 AM – 10:00 PM (Daily)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal glass-strong rounded-3xl p-8 md:p-10 flex flex-col">
+          <div class="text-xs font-mono tracking-widest text-[--green] mb-4">10 — NEWSLETTER</div>
+          <h2 class="font-display text-3xl md:text-4xl font-bold mb-6 leading-tight">Knock once.<br/>Stay in the loop.</h2>
+          <p class="text-[--text-dim] mb-8">Get early access to new areas, exclusive discount codes from partner stores, and zero spam.</p>
+
+          <form class="flex flex-col gap-3 mb-8" onsubmit="event.preventDefault(); showToast('Subscribed! Check your inbox.'); this.reset();">
+            <input type="email" required class="field" placeholder="you@email.com" />
+            <button type="submit" class="btn-primary justify-center">
+              <span>Subscribe</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-[--border] pt-16 pb-8 mt-10">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="grid md:grid-cols-12 gap-10 mb-12">
+        <div class="md:col-span-4">
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-9 h-9 rounded-xl bg-[--green] flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a0f0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            </div>
+            <div class="font-display font-bold text-xl">Knock Knock<span class="text-[--green]">.</span></div>
+          </div>
+          <p class="text-sm text-[--text-dim] mb-6 max-w-sm">A pickup & delivery service that goes to your favorite local stores so you don't have to. Not a store. Not a marketplace. Just a really good errand runner.</p>
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">SERVICES</div>
+          <ul class="space-y-2 text-sm">
+            <li><button onclick="navigateTo('services')" class="hover:text-[--green] transition-colors">Grocery</button></li>
+            <li><button onclick="navigateTo('services')" class="hover:text-[--green] transition-colors">Cake & Bakery</button></li>
+            <li><button onclick="navigateTo('services')" class="hover:text-[--green] transition-colors">Pharmacy</button></li>
+            <li><button onclick="navigateTo('services')" class="hover:text-[--green] transition-colors">Restaurant</button></li>
+            <li><button onclick="navigateTo('services')" class="hover:text-[--green] transition-colors">Documents</button></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">COMPANY</div>
+          <ul class="space-y-2 text-sm">
+            <li><button onclick="showPage('about')" class="hover:text-[--green] transition-colors">About Us</button></li>
+            <li><button onclick="navigateTo('how')" class="hover:text-[--green] transition-colors">How it Works</button></li>
+            <li><button onclick="navigateTo('areas')" class="hover:text-[--green] transition-colors">Delivery Areas</button></li>
+            <li><button onclick="showPage('login')" class="hover:text-[--green] transition-colors">Login</button></li>
+            <li><button onclick="showPage('admin')" class="hover:text-[--green] transition-colors">Admin</button></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-4">LEGAL</div>
+          <ul class="space-y-2 text-sm">
+            <li><button onclick="showPage('privacy')" class="hover:text-[--green] transition-colors">Privacy Policy</button></li>
+            <li><button onclick="showPage('terms')" class="hover:text-[--green] transition-colors">Terms & Conditions</button></li>
+            <li><button onclick="navigateTo('faq')" class="hover:text-[--green] transition-colors">FAQ</button></li>
+            <li><button onclick="navigateTo('contact')" class="hover:text-[--green] transition-colors">Contact</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- =================== AUTH PAGES =================== -->
+<div id="page-login" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-8">
+      <div class="font-display text-3xl font-bold mb-2">Welcome back</div>
+      <p class="text-[--text-dim] text-sm">Log in to track orders and view your history.</p>
+    </div>
+    <div class="glass-strong rounded-3xl p-8">
+      <form onsubmit="event.preventDefault(); simulateLogin(); return false;" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium mb-2 block">Phone Number</label>
+          <input class="field" type="text" required placeholder="03XX-XXXXXXX" />
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-2 block">Password</label>
+          <input class="field" type="password" required placeholder="••••••••" />
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="accent-[--green]" />
+            <span class="text-[--text-dim]">Remember me</span>
+          </label>
+          <button type="button" onclick="showPage('forgot')" class="text-[--green] hover:underline">Forgot?</button>
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center">Log in</button>
+        <div class="text-center text-sm text-[--text-dim]">
+          New here? <button type="button" onclick="showPage('register')" class="text-[--green] hover:underline">Create account</button>
+        </div>
+      </form>
+    </div>
+    <button onclick="showPage('home')" class="mt-6 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2 mx-auto">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </button>
+  </div>
+</div>
+
+<div id="page-register" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-8">
+      <div class="font-display text-3xl font-bold mb-2">Create your account</div>
+      <p class="text-[--text-dim] text-sm">Save addresses, reorder faster, track everything.</p>
+    </div>
+    <div class="glass-strong rounded-3xl p-8">
+      <form onsubmit="event.preventDefault(); simulateRegister(); return false;" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium mb-2 block">Full Name</label>
+          <input class="field" type="text" required placeholder="Your name" />
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-2 block">Phone</label>
+          <input class="field" type="tel" required placeholder="03XX-XXXXXXX" />
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-2 block">Email</label>
+          <input class="field" type="email" required placeholder="you@email.com" />
+        </div>
+        <div>
+          <label class="text-sm font-medium mb-2 block">Password</label>
+          <input class="field" type="password" required placeholder="Min 8 characters" />
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center">Create account</button>
+      </form>
+    </div>
+    <button onclick="showPage('home')" class="mt-6 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2 mx-auto">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </button>
+  </div>
+</div>
+
+<div id="page-forgot" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-md mx-auto">
+    <div class="text-center mb-8">
+      <div class="font-display text-3xl font-bold mb-2">Reset password</div>
+      <p class="text-[--text-dim] text-sm">We'll send a secure reset link to your email.</p>
+    </div>
+    <div class="glass-strong rounded-3xl p-8">
+      <form onsubmit="event.preventDefault(); showToast('Reset link sent. Check your inbox.'); showPage('login'); return false;" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium mb-2 block">Email</label>
+          <input class="field" type="email" required placeholder="you@email.com" />
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center">Send reset link</button>
+      </form>
+    </div>
+    <button onclick="showPage('login')" class="mt-6 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2 mx-auto">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to login
+    </button>
+  </div>
+</div>
+
+<!-- =================== USER DASHBOARD =================== -->
+<div id="page-dashboard" class="hidden min-h-screen pt-28 pb-20 px-5">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">USER DASHBOARD</div>
+        <h1 class="font-display text-3xl md:text-4xl font-bold" id="dash-welcome">Hi, User 👋</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="navigateTo('request')" class="btn-secondary !py-2.5 !px-4 text-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          New delivery
+        </button>
+        <button onclick="logout()" class="btn-secondary !py-2.5 !px-4 text-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="glass rounded-2xl p-5">
+        <div class="text-xs text-[--text-dim] mb-1">Total orders</div>
+        <div class="font-display text-3xl font-bold" id="stat-total">0</div>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <div class="text-xs text-[--text-dim] mb-1">Active</div>
+        <div class="font-display text-3xl font-bold text-[--orange]" id="stat-active">0</div>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <div class="text-xs text-[--text-dim] mb-1">Completed</div>
+        <div class="font-display text-3xl font-bold text-[--green]" id="stat-completed">0</div>
+      </div>
+      <div class="glass rounded-2xl p-5">
+        <div class="text-xs text-[--text-dim] mb-1">Total spent</div>
+        <div class="font-display text-3xl font-bold" id="stat-spent">Rs. 0</div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 glass rounded-3xl p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="font-display text-xl font-bold">Recent orders</h2>
+        </div>
+        <div class="space-y-3" id="dash-orders"></div>
+      </div>
+      <div class="space-y-6">
+        <div class="glass rounded-3xl p-6">
+          <h2 class="font-display text-xl font-bold mb-4">Notifications</h2>
+          <div class="space-y-3">
+            <div class="text-sm">
+              <div class="font-medium">Welcome to Knock Knock!</div>
+              <div class="text-xs text-[--text-dim] mt-1">Start by placing your first delivery request.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ADMIN DASHBOARD =================== -->
+<div id="page-admin" class="hidden min-h-screen">
+  <div class="flex">
+    <aside class="fixed lg:sticky top-0 left-0 h-screen w-64 glass-strong border-r border-[--border] z-40 -translate-x-full lg:translate-x-0 transition-transform" id="admin-sidebar">
+      <div class="p-6 border-b border-[--border]">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-[--green] flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a0f0a" stroke-width="2.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="font-display font-bold text-sm leading-none">Knock Knock</div>
+            <div class="text-[10px] font-mono text-[--text-dim] mt-1">ADMIN PANEL</div>
+          </div>
+        </div>
+      </div>
+      <nav class="p-4 space-y-1 text-sm">
+        <button onclick="setAdminTab('overview')" class="admin-nav-item active w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Overview
+        </button>
+        <button onclick="setAdminTab('deliveries')" class="admin-nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-[--surface] transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Deliveries
+        </button>
+        <button onclick="setAdminTab('customers')" class="admin-nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-[--surface] transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Customers
+        </button>
+        <button onclick="setAdminTab('riders')" class="admin-nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-[--surface] transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>
+          Riders
+        </button>
+        <button onclick="setAdminTab('settings')" class="admin-nav-item w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 hover:bg-[--surface] transition-colors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </button>
+      </nav>
+      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-[--border]">
+        <button onclick="logout()" class="w-full text-left px-4 py-2 rounded-xl hover:bg-[--surface] text-sm flex items-center gap-2 text-[--text-dim]">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 p-5 md:p-8 overflow-x-hidden">
+      <div id="admin-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== STATIC PAGES =================== -->
+<div id="page-about" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-xs font-mono tracking-widest text-[--green] mb-4">ABOUT US</div>
+    <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">We don't sell products.<br/><span class="text-[--green]">We run errands.</span></h1>
+    <div class="prose prose-invert max-w-none space-y-6 text-[--text-dim] text-lg leading-relaxed">
+      <p>Knock Knock started with a simple frustration: getting things from the stores we already loved was harder than it should be. Delivery apps force you to pick from their catalog. We wanted a service that goes to <em>our</em> bakery, <em>our</em> pharmacist, <em>our</em> butcher.</p>
+      <p>So we built one. Knock Knock is not a marketplace. We don't stock products, we don't sell inventory, and we don't take a cut from stores. We're a pure pickup-and-delivery service — you tell us where, you tell us what, and our riders do the rest.</p>
+      <p>Today we operate in Sargodha with verified riders, completing deliveries every month. We've kept the same rule since day one: <strong class="text-[--text]">inspect before you pay</strong>. If something's not right at your door, you don't pay for it.</p>
+    </div>
+    <button onclick="showPage('home')" class="mt-12 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </button>
+  </div>
+</div>
+
+<div id="page-privacy" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-xs font-mono tracking-widest text-[--green] mb-4">LEGAL</div>
+    <h1 class="font-display text-4xl md:text-5xl font-bold mb-8">Privacy Policy</h1>
+    <div class="space-y-6 text-[--text-dim] leading-relaxed">
+      <p>Knock Knock Delivery Service ("we", "us") respects your privacy. This policy explains what we collect and how we use it.</p>
+      <div>
+        <h3 class="font-display text-xl font-bold text-[--text] mb-2">1. Information we collect</h3>
+        <p>Name, phone number, email, delivery addresses, order history, and payment metadata. We do not store full card numbers — payments are processed by Stripe.</p>
+      </div>
+      <div>
+        <h3 class="font-display text-xl font-bold text-[--text] mb-2">2. How we use it</h3>
+        <p>To process deliveries, assign riders, calculate fees, send order updates, and improve our routes. We never sell your data.</p>
+      </div>
+    </div>
+    <button onclick="showPage('home')" class="mt-12 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </button>
+  </div>
+</div>
+
+<div id="page-terms" class="hidden min-h-screen pt-32 pb-20 px-5">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-xs font-mono tracking-widest text-[--green] mb-4">LEGAL</div>
+    <h1 class="font-display text-4xl md:text-5xl font-bold mb-8">Terms & Conditions</h1>
+    <div class="space-y-6 text-[--text-dim] leading-relaxed">
+      <p>By using Knock Knock, you agree to the following terms.</p>
+      <div>
+        <h3 class="font-display text-xl font-bold text-[--text] mb-2">1. Service scope</h3>
+        <p>Knock Knock is a pickup and delivery service only. We do not sell, stock, or inventory any products. We act as your agent to pick up items you have requested from third-party stores.</p>
+      </div>
+      <div>
+        <h3 class="font-display text-xl font-bold text-[--text] mb-2">2. Payment</h3>
+        <p>50% advance payment is required to confirm your order. The remaining 50% is payable in cash on delivery. If items are unavailable at the store, the advance is refunded within 3 business days.</p>
+      </div>
+    </div>
+    <button onclick="showPage('home')" class="mt-12 text-sm text-[--text-dim] hover:text-[--text] flex items-center gap-2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to home
+    </button>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<!-- =================== THREE.JS HERO SCENE =================== -->
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('hero-canvas');
+if (canvas) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 1.5, 8);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+  scene.add(ambient);
+  const keyLight = new THREE.DirectionalLight(0x22c55e, 1.2);
+  keyLight.position.set(5, 8, 5);
+  scene.add(keyLight);
+  const fillLight = new THREE.PointLight(0xfb923c, 1.5, 20);
+  fillLight.position.set(-4, 2, -2);
+  scene.add(fillLight);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.3);
+  rim.position.set(-5, 2, -8);
+  scene.add(rim);
+
+  const scooterGroup = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: 0x22c55e, roughness: 0.3, metalness: 0.6 });
+  const accentMat = new THREE.MeshStandardMaterial({ color: 0x0a0f0a, roughness: 0.5, metalness: 0.4 });
+  const metalMat = new THREE.MeshStandardMaterial({ color: 0xe5e7eb, roughness: 0.2, metalness: 0.9 });
+  const orangeMat = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.4, metalness: 0.3, emissive: 0xfb923c, emissiveIntensity: 0.3 });
+  
+  const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 1.2, 4, 16), bodyMat);
+  body.rotation.z = Math.PI / 2;
+  body.position.y = 0.7;
+  scooterGroup.add(body);
+  
+  const fairing = new THREE.Mesh(new THREE.ConeGeometry(0.45, 0.8, 8), bodyMat);
+  fairing.rotation.x = Math.PI / 2;
+  fairing.position.set(0.9, 0.9, 0);
+  scooterGroup.add(fairing);
+  
+  const headlight = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), orangeMat);
+  headlight.position.set(1.25, 0.95, 0);
+  scooterGroup.add(headlight);
+  
+  const seat = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.8, 4, 12), accentMat);
+  seat.rotation.z = Math.PI / 2;
+  seat.position.set(-0.2, 1.15, 0);
+  scooterGroup.add(seat);
+  
+  const wheelGeo = new THREE.TorusGeometry(0.4, 0.15, 8, 24);
+  const wheelMat = new THREE.MeshStandardMaterial({ color: 0x0a0f0a, roughness: 0.7, metalness: 0.2 });
+  
+  const frontWheel = new THREE.Mesh(wheelGeo, wheelMat);
+  frontWheel.rotation.y = Math.PI / 2;
+  frontWheel.position.set(0.9, 0, 0);
+  scooterGroup.add(frontWheel);
+  
+  const backWheel = new THREE.Mesh(wheelGeo, wheelMat);
+  backWheel.rotation.y = Math.PI / 2;
+  backWheel.position.set(-0.9, 0, 0);
+  scooterGroup.add(backWheel);
+  
+  const hubGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.1, 16);
+  const frontHub = new THREE.Mesh(hubGeo, metalMat);
+  frontHub.rotation.z = Math.PI / 2;
+  frontHub.position.set(0.9, 0, 0);
+  scooterGroup.add(frontHub);
+  
+  const backHub = new THREE.Mesh(hubGeo, metalMat);
+  backHub.rotation.z = Math.PI / 2;
+  backHub.position.set(-0.9, 0, 0);
+  scooterGroup.add(backHub);
+  
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.8, 8), metalMat);
+  handle.position.set(0.8, 1.4, 0);
+  handle.rotation.z = Math.PI / 2;
+  scooterGroup.add(handle);
+  
+  const boxGroup = new THREE.Group();
+  const box = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.5), bodyMat);
+  boxGroup.add(box);
+  const lid = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.05, 0.52), accentMat);
+  lid.position.y = 0.375;
+  boxGroup.add(lid);
+  const logoPlate = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.01), orangeMat);
+  logoPlate.position.set(0, 0.05, 0.26);
+  boxGroup.add(logoPlate);
+  boxGroup.position.set(-1.1, 1, 0);
+  scooterGroup.add(boxGroup);
+
+  const beamGeo = new THREE.ConeGeometry(0.3, 2, 16, 1, true);
+  const beamMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+  const beam = new THREE.Mesh(beamGeo, beamMat);
+  beam.rotation.z = -Math.PI / 2;
+  beam.position.set(2.2, 0.95, 0);
+  scooterGroup.add(beam);
+
+  scooterGroup.position.set(2, -0.5, 0);
+  scooterGroup.rotation.y = -0.3;
+  scooterGroup.scale.set(1.1, 1.1, 1.1);
+  scene.add(scooterGroup);
+
+  const boxes = [];
+  const boxColors = [0x22c55e, 0xfb923c, 0xffffff, 0x22c55e];
+  for (let i = 0; i < 12; i++) {
+    const size = 0.15 + Math.random() * 0.2;
+    const geo = new THREE.BoxGeometry(size, size, size);
+    const mat = new THREE.MeshStandardMaterial({
+      color: boxColors[i % boxColors.length],
+      roughness: 0.4,
+      metalness: 0.5,
+      emissive: boxColors[i % boxColors.length],
+      emissiveIntensity: 0.1
+    });
+    const box3d = new THREE.Mesh(geo, mat);
+    box3d.position.set(
+      (Math.random() - 0.5) * 14,
+      Math.random() * 5 + 0.5,
+      (Math.random() - 0.5) * 6 - 2
+    );
+    box3d.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+    box3d.userData = {
+      rotSpeed: { x: (Math.random() - 0.5) * 0.01, y: (Math.random() - 0.5) * 0.01, z: (Math.random() - 0.5) * 0.01 },
+      floatSpeed: 0.5 + Math.random() * 0.5,
+      floatOffset: Math.random() * Math.PI * 2,
+      baseY: box3d.position.y
+    };
+    boxes.push(box3d);
+    scene.add(box3d);
+  }
+
+  const particleCount = 400;
+  const particleGeo = new THREE.BufferGeometry();
+  const positions = new Float32Array(particleCount * 3);
+  const particleColors = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    positions[i*3] = (Math.random() - 0.5) * 30;
+    positions[i*3+1] = Math.random() * 15;
+    positions[i*3+2] = (Math.random() - 0.5) * 15 - 2;
+    const c = Math.random();
+    if (c > 0.7) { particleColors[i*3] = 0.96; particleColors[i*3+1] = 0.57; particleColors[i*3+2] = 0.24; }
+    else if (c > 0.4) { particleColors[i*3] = 0.13; particleColors[i*3+1] = 0.77; particleColors[i*3+2] = 0.37; }
+    else { particleColors[i*3] = 1; particleColors[i*3+1] = 1; particleColors[i*3+2] = 1; }
+  }
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+  const particleMat = new THREE.PointsMaterial({
+    size: 0.06,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const particles = new THREE.Points(particleGeo, particleMat);
+  scene.add(particles);
+
+  const cityGroup = new THREE.Group();
+  for (let i = 0; i < 30; i++) {
+    const w = 0.5 + Math.random() * 0.8;
+    const h = 1 + Math.random() * 3;
+    const d = 0.5 + Math.random() * 0.5;
+    const bMat = new THREE.MeshStandardMaterial({
+      color: 0x0a0f0a,
+      roughness: 0.9,
+      emissive: Math.random() > 0.6 ? 0x22c55e : 0xfb923c,
+      emissiveIntensity: 0.05
+    });
+    const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), bMat);
+    b.position.set(-12 + i * 0.85, h/2 - 1.5, -6 + Math.random() * 2);
+    cityGroup.add(b);
+  }
+  scene.add(cityGroup);
+
+  const groundGeo = new THREE.PlaneGeometry(40, 20);
+  const groundMat = new THREE.MeshStandardMaterial({ color: 0x0a0f0a, roughness: 0.9, metalness: 0.1, transparent: true, opacity: 0.6 });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -1.5;
+  scene.add(ground);
+
+  let mouseX = 0, mouseY = 0;
+  let targetX = 0, targetY = 0;
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) - 0.5;
+    mouseY = (e.clientY / window.innerHeight) - 0.5;
+  });
+
+  let scrollY = 0;
+  window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+    
+    targetX += (mouseX - targetX) * 0.05;
+    targetY += (mouseY - targetY) * 0.05;
+    camera.position.x = targetX * 1.5;
+    camera.position.y = 1.5 - targetY * 0.8 - scrollY * 0.002;
+    camera.lookAt(scooterGroup.position.x * 0.5, 0.5, 0);
+    
+    scooterGroup.position.y = -0.5 + Math.sin(t * 1.5) * 0.1;
+    scooterGroup.rotation.z = Math.sin(t * 0.8) * 0.03 + targetX * 0.1;
+    scooterGroup.rotation.x = -targetY * 0.05;
+    
+    frontWheel.rotation.x = t * 3;
+    backWheel.rotation.x = t * 3;
+    frontHub.rotation.x = t * 3;
+    backHub.rotation.x = t * 3;
+    
+    beam.material.opacity = 0.1 + Math.sin(t * 4) * 0.05;
+    
+    boxes.forEach((b) => {
+      b.rotation.x += b.userData.rotSpeed.x;
+      b.rotation.y += b.userData.rotSpeed.y;
+      b.rotation.z += b.userData.rotSpeed.z;
+      b.position.y = b.userData.baseY + Math.sin(t * b.userData.floatSpeed + b.userData.floatOffset) * 0.3;
+    });
+    
+    const pos = particles.geometry.attributes.position.array;
+    for (let i = 0; i < particleCount; i++) {
+      pos[i*3+1] += 0.005;
+      if (pos[i*3+1] > 12) pos[i*3+1] = -1;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+    
+    cityGroup.position.x = -targetX * 0.5;
+    
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+</script>
+
+<!-- =================== APP LOGIC =================== -->
+<script>
+// ===== TOAST =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// ===== THEME =====
+const themeToggle = document.getElementById('theme-toggle');
+const iconMoon = document.getElementById('icon-moon');
+const iconSun = document.getElementById('icon-sun');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  iconMoon.classList.toggle('hidden', t === 'light');
+  iconSun.classList.toggle('hidden', t === 'dark');
+  localStorage.setItem('kk-theme', t);
+}
+themeToggle.addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  setTheme(cur === 'dark' ? 'light' : 'dark');
+});
+setTheme(localStorage.getItem('kk-theme') || 'dark');
+
+// ===== LOADER =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 700);
+  }, 1400);
+});
+
+// ===== MOBILE NAV =====
+const mobileNav = document.getElementById('mobile-nav');
+document.getElementById('mobile-toggle').addEventListener('click', () => mobileNav.classList.add('mobile-nav-open'));
+document.getElementById('mobile-close').addEventListener('click', () => mobileNav.classList.remove('mobile-nav-open'));
+document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileNav.classList.remove('mobile-nav-open')));
+
+// ===== SCROLL REVEAL =====
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// ===== SERVICES DATA =====
+const services = [
+  { name: 'Grocery Delivery', desc: 'Daily groceries, fresh produce, pantry staples from any supermarket.', icon: '<path d="M3 6h18l-2 13H5L3 6z"/><path d="M3 6L2 3H1"/><path d="M8 10v3M12 10v3M16 10v3"/>' },
+  { name: 'Cake Delivery', desc: 'Birthday, wedding, or just-because cakes from your favorite bakery.', icon: '<path d="M12 2a3 3 0 0 0-3 3v1H6a2 2 0 0 0-2 2v2h16V8a2 2 0 0 0-2-2h-3V5a3 3 0 0 0-3-3z"/><path d="M4 10v10h16V10"/><path d="M9 14v3M15 14v3"/>' },
+  { name: 'Pharmacy Pickup', desc: 'Prescriptions, OTC medicine, supplements from any pharmacy.', icon: '<path d="M3 9h18v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z"/><path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4"/><path d="M10 13h4M12 11v4"/>' },
+  { name: 'Restaurant Pickup', desc: 'Pickup from restaurants that do not have their own delivery.', icon: '<path d="M3 2v7c0 1.1.9 2 2 2h2v11M9 2v20M14 2h4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-4V2z"/>' },
+  { name: 'Bakery Pickup', desc: 'Fresh bread, croissants, pastries — picked up warm, delivered warm.', icon: '<path d="M4 10a8 8 0 0 1 16 0v10H4V10z"/><path d="M4 14h16M8 10v4M12 10v4M16 10v4"/>' },
+  { name: 'Household Essentials', desc: 'Cleaning supplies, toiletries, baby care from any store you choose.', icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>' },
+  { name: 'Gift Delivery', desc: 'Last-minute gifts, flowers, surprises — hand-delivered with care.', icon: '<path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>' },
+  { name: 'Document Delivery', desc: 'Contracts, passports, legal papers — secure and tracked end-to-end.', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/>' },
+  { name: 'Parcel Delivery', desc: 'Send packages across the city. Same-day, tracked, insured.', icon: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"/>' }
+];
+
+const servicesGrid = document.getElementById('services-grid');
+services.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'reveal glass rounded-3xl p-7 hover:border-[--green] transition-all duration-300 hover:-translate-y-1 group cursor-pointer';
+  div.style.transitionDelay = (i * 0.05) + 's';
+  div.innerHTML = `
+    <div class="w-12 h-12 rounded-2xl bg-[--green]/10 border border-[--green]/30 flex items-center justify-center text-[--green] mb-5 group-hover:scale-110 transition-transform">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>
+    </div>
+    <h3 class="font-display text-xl font-bold mb-2">${s.name}</h3>
+    <p class="text-sm text-[--text-dim] leading-relaxed mb-4">${s.desc}</p>
+    <div class="text-xs font-mono text-[--green] flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+      REQUEST NOW
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </div>
+  `;
+  div.onclick = () => navigateTo('request');
+  servicesGrid.appendChild(div);
+  revealObs.observe(div);
+});
+
+// ===== REVIEWS =====
+const reviews = [
+  { name: 'Sana M.', area: 'Block 7, Sargodha', text: 'Got a cake from a tiny home bakery that doesn\'t do delivery. Knock Knock picked it up in 20 minutes. Genuinely changed my life.', rating: 5, color: 'from-[--green] to-[--orange]' },
+  { name: 'Bilal K.', area: 'Satellite Town, Sargodha', text: 'My mom needed specific medicine only available at one pharmacy across town. They picked it up, called me to confirm the brand, delivered in 45 min.', rating: 5, color: 'from-[--orange] to-[--green]' },
+  { name: 'Ayesha R.', area: 'Model Town, Sargodha', text: 'I inspect everything at the door. The rider waited patiently while I checked every single item. That\'s how it should be done.', rating: 5, color: 'from-[--green] to-[--green]' }
+];
+const reviewsGrid = document.getElementById('reviews-grid');
+reviews.forEach((r, i) => {
+  const div = document.createElement('div');
+  div.className = 'reveal glass rounded-3xl p-7 flex flex-col';
+  div.style.transitionDelay = (i * 0.05) + 's';
+  const stars = Array(r.rating).fill('<svg width="14" height="14" viewBox="0 0 24 24" fill="var(--orange)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>').join('');
+  const initials = r.name.split(' ').map(n => n[0]).join('');
+  div.innerHTML = `
+    <div class="flex gap-1 mb-4">${stars}</div>
+    <p class="text-[--text] leading-relaxed mb-6 flex-1">"${r.text}"</p>
+    <div class="flex items-center gap-3 pt-4 border-t border-[--border]">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br ${r.color} flex items-center justify-center text-[--bg] font-bold text-sm">${initials}</div>
+      <div>
+        <div class="font-semibold text-sm">${r.name}</div>
+        <div class="text-xs text-[--text-dim]">${r.area}</div>
+      </div>
+    </div>
+  `;
+  reviewsGrid.appendChild(div);
+  revealObs.observe(div);
+});
+
+// ===== FAQ =====
+const faqs = [
+  { q: 'Do you sell or stock any products?', a: 'No. Knock Knock is strictly a pickup and delivery service. We do not own, sell, or inventory any products. We pick up items from the store you specify and deliver them to you.' },
+  { q: 'How is the delivery fee calculated?', a: 'Fees are based on distance between pickup and delivery locations. You see the fee before confirming.' },
+  { q: 'Why 50% advance and 50% COD?', a: 'The advance secures your slot and covers the rider\'s time even if items are unavailable. The COD portion lets you inspect items at your door before paying the balance.' },
+  { q: 'What if an item is unavailable at the store?', a: 'Our rider will call you to suggest alternatives or skip the item. The advance for unavailable items is refunded within 3 business days.' },
+  { q: 'Can I order from multiple stores in one request?', a: 'Currently each request is for one pickup location. If you need items from multiple stores, place separate requests.' },
+  { q: 'What are your operating hours?', a: 'We operate daily from 9:00 AM to 10:00 PM. Orders placed outside these hours are queued for the next operating window.' },
+  { q: 'Which cities are you in?', a: 'Currently Sargodha. We are expanding to nearby cities soon — subscribe to our newsletter for launch announcements.' }
+];
+const faqList = document.getElementById('faq-list');
+faqs.forEach((f, i) => {
+  const div = document.createElement('div');
+  div.className = 'glass rounded-2xl overflow-hidden';
+  div.innerHTML = `
+    <button class="faq-q w-full text-left p-5 flex items-center justify-between gap-4 hover:bg-[--surface] transition-colors">
+      <span class="font-display font-semibold text-lg">${f.q}</span>
+      <svg class="faq-icon flex-shrink-0 transition-transform" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="faq-a max-h-0 overflow-hidden transition-all duration-300">
+      <p class="p-5 pt-0 text-[--text-dim] leading-relaxed">${f.a}</p>
+    </div>
+  `;
+  const q = div.querySelector('.faq-q');
+  const a = div.querySelector('.faq-a');
+  const icon = div.querySelector('.faq-icon');
+  q.addEventListener('click', () => {
+    const open = a.style.maxHeight && a.style.maxHeight !== '0px';
+    document.querySelectorAll('.faq-a').forEach(el => el.style.maxHeight = '0px');
+    document.querySelectorAll('.faq-icon').forEach(el => el.style.transform = 'rotate(0deg)');
+    if (!open) {
+      a.style.maxHeight = a.scrollHeight + 'px';
+      icon.style.transform = 'rotate(180deg)';
+    }
+  });
+  faqList.appendChild(div);
+});
+
+// ===== DYNAMIC SETTINGS LOADER =====
+async function loadSettings() {
+  try {
+    const res = await fetch('http://localhost:5000/api/orders/settings');
+    const data = await res.json();
+    if (data) {
+      document.getElementById('price-0-3').textContent = `Rs. ${data.fee0_3}`;
+      document.getElementById('price-3-6').textContent = `Rs. ${data.fee3_6}`;
+      document.getElementById('price-6-10').textContent = `Rs. ${data.fee6_10}`;
+      document.getElementById('advance-amount').textContent = `Rs. ${data.fee0_3}`;
+    }
+  } catch (e) {}
+}
+loadSettings();
+
+// ===== DELIVERY FORM (CONNECTED TO BACKEND) =====
+document.getElementById('delivery-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const user = JSON.parse(localStorage.getItem('kk-user'));
+  if (!user || !user.token) {
+    showToast('Please login first to place an order');
+    setTimeout(() => showPage('login'), 1000);
+    return;
+  }
+
+  try {
+    // FormData use karenge kyunke hum image (screenshot) bhej rahe hain
+    const formData = new FormData();
+    formData.append('pickupStore', document.querySelector('[name="store"]').value);
+    formData.append('items', JSON.stringify(document.querySelector('[name="items"]').value.split('\n')));
+    formData.append('deliveryAddress', document.querySelector('[name="delAddr"]').value);
+    formData.append('preferredTime', document.querySelector('[name="time"]').value);
+    formData.append('paymentMethod', document.querySelector('[name="payment"]:checked').value);
+    
+    const ssFile = document.getElementById('payment-ss').files[0];
+    if (ssFile) formData.append('paymentSS', ssFile);
+
+    const orderRes = await fetch('http://localhost:5000/api/orders', {
+      method: 'POST',
+      headers: { 
+        'Authorization': `Bearer ${user.token}`
+        // Note: Content-Type khud set hoga FormData mein, isliye yahan likhna nahi
+      },
+      body: formData
+    });
+
+    const orderData = await orderRes.json();
+    
+    if (orderRes.ok) {
+      showToast(`Order placed successfully! Your ID is ${orderData.orderId}`);
+      setTimeout(() => {
+        document.getElementById('track-input').value = orderData.orderId;
+        navigateTo('track');
+        setTimeout(trackOrder, 800);
+        document.getElementById('delivery-form').reset(); // Form khali karne ke liye
+      }, 1500);
+    } else {
+      showToast(orderData.message || 'Order failed');
+    }
+  } catch (error) {
+    showToast('Server error');
+  }
+});
+// ===== TRACK ORDER (CONNECTED TO BACKEND) =====
+async function trackOrder() {
+  const input = document.getElementById('track-input').value.trim();
+  if (!input) { showToast('Please enter an Order ID'); return; }
+  
+  document.getElementById('track-empty').classList.add('hidden');
+  document.getElementById('track-result').classList.remove('hidden');
+  
+  document.getElementById('track-id').textContent = 'Loading...';
+  document.getElementById('track-route').textContent = 'Fetching details...';
+  document.getElementById('track-eta').textContent = '...';
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/orders/track/${input}`);
+    const data = await res.json();
+
+    if (res.ok) {
+      document.getElementById('track-id').textContent = data.orderId;
+      document.getElementById('track-route').textContent = `${data.pickupStore} → ${data.deliveryAddress}`;
+      
+      const eta = data.status === 'Delivered' ? 'Delivered' : 
+                  data.status === 'On the Way' ? '10 minutes' : 
+                  data.status === 'Picking Up' ? '25 minutes' : 'Pending';
+      document.getElementById('track-eta').textContent = eta;
+
+      const statuses = ['Request Received', 'Order Accepted', 'Rider Assigned', 'Picking Up', 'On the Way', 'Delivered'];
+      const stepIndex = statuses.indexOf(data.status);
+      const progress = (stepIndex / (statuses.length - 1)) * 100;
+      document.getElementById('track-progress').style.width = progress + '%';
+      document.getElementById('track-marker').style.left = `calc(${progress}% - 8px)`;
+    } else {
+      document.getElementById('track-id').textContent = 'Not Found';
+      document.getElementById('track-route').textContent = data.message || 'Order not found';
+      showToast(data.message || 'Order not found');
+    }
+  } catch (error) {
+    showToast('Server error while tracking');
+  }
+}
+window.trackOrder = trackOrder;
+
+// ===== NAVIGATION HELPER =====
+function navigateTo(id) {
+  showPage('home');
+  setTimeout(() => {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+window.navigateTo = navigateTo;
+
+// ===== PAGE ROUTER (WITH ADMIN SECURITY) =====
+function showPage(page) {
+  // Admin Security Check
+  if (page === 'admin') {
+    const user = JSON.parse(localStorage.getItem('kk-user'));
+    if (!user || user.role !== 'admin') {
+      showToast('Access Denied: Admins only');
+      return; // Block navigation
+    }
+  }
+
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (page === 'home') {
+    document.getElementById('page-home').classList.remove('hidden');
+  }
+  document.getElementById('mobile-nav').classList.remove('mobile-nav-open');
+  
+  if (page === 'dashboard') {
+    renderDashOrders();
+  }
+  if (page === 'admin') {
+    renderAdmin();
+  }
+}
+window.showPage = showPage;
+
+// ===== AUTH (CONNECTED TO BACKEND) =====
+async function simulateLogin() {
+  const phone = document.querySelector('#page-login input[type="text"]').value;
+  const password = document.querySelector('#page-login input[type="password"]').value;
+  
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, password })
+    });
+    
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('kk-user', JSON.stringify(data));
+      showToast('Logged in successfully');
+      setTimeout(() => { showPage('dashboard'); renderDashOrders(); }, 500);
+    } else {
+      showToast(data.message || 'Login failed');
+    }
+  } catch (error) {
+    showToast('Server se connect nahi ho pa raha');
+  }
+}
+window.simulateLogin = simulateLogin;
+
+async function simulateRegister() {
+  const name = document.querySelector('#page-register input[type="text"]').value;
+  const phone = document.querySelector('#page-register input[type="tel"]').value;
+  const email = document.querySelector('#page-register input[type="email"]').value;
+  const password = document.querySelector('#page-register input[type="password"]').value;
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone, email, password })
+    });
+    
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('kk-user', JSON.stringify(data));
+      showToast('Account created successfully');
+      setTimeout(() => { showPage('dashboard'); renderDashOrders(); }, 500);
+    } else {
+      showToast(data.message || 'Registration failed');
+    }
+  } catch (error) {
+    showToast('Server se connect nahi ho pa raha');
+  }
+}
+window.simulateRegister = simulateRegister;
+
+function logout() {
+  localStorage.removeItem('kk-user');
+  showToast('Logged out');
+  setTimeout(() => showPage('home'), 500);
+}
+window.logout = logout;
+
+// ===== DASHBOARD ORDERS (CONNECTED TO BACKEND) =====
+async function renderDashOrders() {
+  const el = document.getElementById('dash-orders');
+  if (!el) return;
+  const user = JSON.parse(localStorage.getItem('kk-user'));
+  
+  if (!user || !user.token) return;
+
+  try {
+    const res = await fetch('http://localhost:5000/api/orders/myorders', {
+      headers: { 'Authorization': `Bearer ${user.token}` }
+    });
+    const orders = await res.json();
+
+    let totalSpent = 0;
+    let activeCount = 0;
+    let completedCount = 0;
+    orders.forEach(o => {
+      totalSpent += o.deliveryFee || 0;
+      if (o.status === 'Delivered') completedCount++;
+      else if (o.status !== 'Cancelled') activeCount++;
+    });
+
+    document.getElementById('stat-total').textContent = orders.length;
+    document.getElementById('stat-active').textContent = activeCount;
+    document.getElementById('stat-completed').textContent = completedCount;
+    document.getElementById('stat-spent').textContent = `Rs. ${totalSpent}`;
+
+    const h1 = document.getElementById('dash-welcome');
+    if (h1 && user.name) h1.innerHTML = `Hi, ${user.name.split(' ')[0]} 👋`;
+
+    if (orders.length === 0) {
+      el.innerHTML = '<div class="text-center text-[--text-dim] py-8">No orders yet. Place your first delivery!</div>';
+      return;
+    }
+
+    el.innerHTML = orders.map(o => `
+      <div class="flex items-center justify-between p-4 rounded-xl glass hover:border-[--green] transition-colors">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-mono font-bold text-sm">${o.orderId}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${o.status === 'Delivered' ? 'bg-[--green]/20 text-[--green]' : o.status === 'Cancelled' ? 'bg-red-400/20 text-red-400' : 'bg-[--orange]/20 text-[--orange]'}">${o.status}</span>
+          </div>
+          <div class="text-sm font-medium truncate">${o.pickupStore}</div>
+          <div class="text-xs text-[--text-dim] mt-0.5">${new Date(o.createdAt).toLocaleDateString()}</div>
+        </div>
+        <div class="text-right ml-3">
+          <div class="font-mono font-bold">Rs. ${o.deliveryFee || 0}</div>
+          <button onclick="document.getElementById('track-input').value='${o.orderId}'; showPage('home'); setTimeout(()=>{document.getElementById('track').scrollIntoView({behavior:'smooth'}); trackOrder();}, 500);" class="text-xs text-[--green] hover:underline mt-1">Track →</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (error) {
+    el.innerHTML = '<div class="text-center text-red-400 py-4">Error loading orders.</div>';
+  }
+}
+
+// ===== ADMIN LOGIC (DYNAMIC DATA) =====
+let adminTab = 'overview';
+function setAdminTab(tab) {
+  adminTab = tab;
+  document.querySelectorAll('.admin-nav-item').forEach(n => n.classList.remove('active'));
+  event.target.closest('button').classList.add('active');
+  renderAdmin();
+}
+window.setAdminTab = setAdminTab;
+
+async function renderAdmin() {
+  const c = document.getElementById('admin-content');
+  const user = JSON.parse(localStorage.getItem('kk-user'));
+  if (!user || user.role !== 'admin') return;
+
+  if (adminTab === 'overview') {
+    try {
+      const res = await fetch('http://localhost:5000/api/orders', { headers: { 'Authorization': `Bearer ${user.token}` }});
+      const orders = await res.json();
+      
+      const total = orders.length;
+      const active = orders.filter(o => !['Delivered', 'Cancelled'].includes(o.status)).length;
+      const completed = orders.filter(o => o.status === 'Delivered').length;
+      const cancelled = orders.filter(o => o.status === 'Cancelled').length;
+      const pending = orders.filter(o => o.status === 'Request Received').length;
+      const revenue = orders.reduce((sum, o) => sum + (o.deliveryFee || 0), 0);
+
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">ADMIN PANEL</div>
+          <h1 class="font-display text-3xl md:text-4xl font-bold">Overview</h1>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Total Requests</div><div class="font-display text-2xl font-bold">${total}</div></div>
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Active</div><div class="font-display text-2xl font-bold text-[--orange]">${active}</div></div>
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Completed</div><div class="font-display text-2xl font-bold text-[--green]">${completed}</div></div>
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Cancelled</div><div class="font-display text-2xl font-bold text-red-400">${cancelled}</div></div>
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Pending</div><div class="font-display text-2xl font-bold text-yellow-400">${pending}</div></div>
+          <div class="glass rounded-2xl p-5"><div class="text-xs text-[--text-dim] mb-2">Total Revenue</div><div class="font-display text-2xl font-bold text-[--green]">Rs. ${revenue}</div></div>
+        </div>
+      `;
+    } catch (e) { c.innerHTML = '<div class="text-red-400">Error loading data</div>'; }
+  } 
+  else if (adminTab === 'deliveries') {
+    try {
+      const res = await fetch('http://localhost:5000/api/orders', { headers: { 'Authorization': `Bearer ${user.token}` }});
+      const orders = await res.json();
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">ADMIN PANEL</div>
+          <h1 class="font-display text-3xl md:text-4xl font-bold">Delivery Management</h1>
+        </div>
+        <div class="glass rounded-3xl p-6">
+          <div class="space-y-4">
+            ${orders.length === 0 ? '<div class="text-center text-[--text-dim] py-8">No orders yet.</div>' : orders.map(o => `
+              <div class="glass rounded-2xl p-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+  <div class="flex items-center gap-3">
+    <div class="font-mono font-bold text-[--green]">${o.orderId}</div>
+    <span class="px-2 py-1 rounded-full text-xs font-bold bg-[--orange]/20 text-[--orange]">${o.status}</span>
+  </div>
+  <!-- Status Change Dropdown -->
+  <select onchange="changeStatus('${o._id}', this.value)" class="field !w-auto !py-1.5 !px-3 text-xs">
+    <option ${o.status === 'Request Received' ? 'selected' : ''}>Request Received</option>
+    <option ${o.status === 'Order Accepted' ? 'selected' : ''}>Order Accepted</option>
+    <option ${o.status === 'Rider Assigned' ? 'selected' : ''}>Rider Assigned</option>
+    <option ${o.status === 'Picking Up' ? 'selected' : ''}>Picking Up</option>
+    <option ${o.status === 'On the Way' ? 'selected' : ''}>On the Way</option>
+    <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+    <option ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+  </select>
+</div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div><div class="text-xs text-[--text-dim] mb-1">Customer</div><div class="font-medium">${o.user?.name || 'N/A'}</div></div>
+                  <div><div class="text-xs text-[--text-dim] mb-1">Pickup store</div><div class="font-medium">${o.pickupStore}</div></div>
+                  <div><div class="text-xs text-[--text-dim] mb-1">Delivery address</div><div class="font-medium">${o.deliveryAddress}</div></div>
+                  <div><div class="text-xs text-[--text-dim] mb-1">Rider</div><div class="font-medium">Shayan</div></div>
+                </div>
+                <div class="mt-3 pt-3 border-t border-[--border]">
+                  <div class="text-xs text-[--text-dim] mb-1">Item list</div>
+                  <div class="text-sm">${o.items.join(', ')}</div>
+                   ${o.paymentSS ? `<img src="http://localhost:5000${o.paymentSS}" alt="Payment SS" class="mt-3 rounded-lg max-w-xs border border-[--border]">` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } catch (e) { c.innerHTML = '<div class="text-red-400">Error loading orders</div>'; }
+  } 
+  else if (adminTab === 'customers') {
+    try {
+      const res = await fetch('http://localhost:5000/api/orders/users', { headers: { 'Authorization': `Bearer ${user.token}` }});
+      const users = await res.json();
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">ADMIN PANEL</div>
+          <h1 class="font-display text-3xl md:text-4xl font-bold">Customer Management</h1>
+        </div>
+        <div class="glass rounded-3xl p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead><tr class="text-left text-xs text-[--text-dim] border-b border-[--border]">
+                <th class="pb-3 font-mono">NAME</th><th class="pb-3 font-mono">PHONE</th><th class="pb-3 font-mono">EMAIL</th><th class="pb-3 font-mono">ROLE</th>
+              </tr></thead>
+              <tbody>
+                ${users.length === 0 ? '<tr><td colspan="4" class="text-center text-[--text-dim] py-8">No users found.</td></tr>' : users.map(cu => `
+                  <tr class="border-b border-[--border] hover:bg-[--surface]">
+                    <td class="py-3 font-medium">${cu.name}</td>
+                    <td class="py-3 font-mono">${cu.phone}</td>
+                    <td class="py-3 font-mono">${cu.email || 'N/A'}</td>
+                    <td class="py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${cu.role === 'admin' ? 'bg-[--orange]/20 text-[--orange]' : 'bg-[--green]/20 text-[--green]'}">${cu.role}</span></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    } catch (e) { c.innerHTML = '<div class="text-red-400">Error loading customers</div>'; }
+  } 
+  else if (adminTab === 'riders') {
+    c.innerHTML = `
+      <div class="mb-8">
+        <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">ADMIN PANEL</div>
+        <h1 class="font-display text-3xl md:text-4xl font-bold">Rider Management</h1>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="glass rounded-3xl p-6">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[--green] to-[--orange] flex items-center justify-center text-[--bg] font-bold">S</div>
+            <div class="flex-1">
+              <div class="font-display text-lg font-bold">Shayan</div>
+              <div class="text-xs text-[--text-dim] font-mono">03011200143</div>
+            </div>
+            <span class="px-2 py-1 rounded-full text-xs font-bold bg-[--green]/20 text-[--green]">Available</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-4 border-t border-[--border]">
+            <div><div class="text-xs text-[--text-dim]">Rating</div><div class="font-bold">5.0</div></div>
+            <div><div class="text-xs text-[--text-dim]">Status</div><div class="font-bold">Active</div></div>
+          </div>
+        </div>
+      </div>
+    `;
+  } 
+  else if (adminTab === 'settings') {
+    try {
+      const res = await fetch('http://localhost:5000/api/orders/settings');
+      const settings = await res.json();
+      c.innerHTML = `
+        <div class="mb-8">
+          <div class="text-xs font-mono tracking-widest text-[--text-dim] mb-1">ADMIN PANEL</div>
+          <h1 class="font-display text-3xl md:text-4xl font-bold">Settings</h1>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="glass rounded-3xl p-6">
+            <h2 class="font-display text-xl font-bold mb-5">Delivery fees</h2>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between"><span class="text-sm">0–3 km</span><input id="set-fee0_3" class="field !w-32" value="${settings.fee0_3}" type="number" /></div>
+              <div class="flex items-center justify-between"><span class="text-sm">3–6 km</span><input id="set-fee3_6" class="field !w-32" value="${settings.fee3_6}" type="number" /></div>
+              <div class="flex items-center justify-between"><span class="text-sm">6–10 km</span><input id="set-fee6_10" class="field !w-32" value="${settings.fee6_10}" type="number" /></div>
+              <div class="flex items-center justify-between"><span class="text-sm">Above 10 km</span><input id="set-feeAbove10" class="field !w-32" value="${settings.feeAbove10}" type="number" /></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button class="btn-primary" onclick="saveSettings()">Save changes</button>
+        </div>
+      `;
+    } catch (e) { c.innerHTML = '<div class="text-red-400">Error loading settings</div>'; }
+  }
+}
+window.renderAdmin = renderAdmin;
+async function changeStatus(id, status) {
+  const user = JSON.parse(localStorage.getItem('kk-user'));
+  try {
+    await fetch(`http://localhost:5000/api/orders/${id}/status`, {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}` 
+      },
+      body: JSON.stringify({ status })
+    });
+    showToast('Status updated successfully!');
+    renderAdmin(); // Admin panel refresh karne ke liye
+  } catch (e) { showToast('Error updating status'); }
+}
+window.changeStatus = changeStatus;
+async function saveSettings() {
+  const user = JSON.parse(localStorage.getItem('kk-user'));
+  const settings = {
+    fee0_3: document.getElementById('set-fee0_3').value,
+    fee3_6: document.getElementById('set-fee3_6').value,
+    fee6_10: document.getElementById('set-fee6_10').value,
+    feeAbove10: document.getElementById('set-feeAbove10').value
+  };
+  try {
+    await fetch('http://localhost:5000/api/orders/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}` },
+      body: JSON.stringify(settings)
+    });
+    showToast('Settings updated successfully!');
+    loadSettings(); // Refresh prices everywhere
+  } catch (e) { showToast('Error saving settings'); }
+}
+window.saveSettings = saveSettings;
+</script>
+
+</body>
+</html>
